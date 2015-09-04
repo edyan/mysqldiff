@@ -1,4 +1,6 @@
 {
+    "name": "MySQLDiff",
+    "description": "A simple tool that helps to compare 2 databases using Doctrine DBAL.",
     "autoload": {
         "psr-0": { "": "src/" }
     },

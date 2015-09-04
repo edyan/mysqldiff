@@ -1,10 +1,10 @@
 <?php
 /**
- * TODO: Add an option to copy the left database info to the right (copy to right)
- * TODO: Allow another charset
- * TODO: Add Multilingual support
- * TODO: Add logs
- * TODO: PhpUnit
+ * @todo  Add an option to copy the left database info to the right (copy to right)
+ * @todo  Allow another charset
+ * @todo  Add Multilingual support
+ * @todo  Add logs
+ * @todo  PhpUnit
  */
 require_once __DIR__.'/../vendor/autoload.php';
 
@@ -13,8 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 // Boot my app
 $app = new Silex\Application();
-$app['debug'] = true;
-ini_set('display_errors', 'on');
+$app['debug'] = false;
 
 // Register all services
 $app->register(new Silex\Provider\SessionServiceProvider());
