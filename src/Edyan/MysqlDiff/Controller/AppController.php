@@ -273,12 +273,6 @@ class AppController
             $schemaDiff->removedTables = array();
         }
 
-        /**
-         * As Doctrine is limited in some comparisons, I have to find another way for :
-         *
-         * @todo Detects changes in Table Charset + Comments + Engine and other properties
-         * @todo For doctrine MEDIUMINT = INT, it doesn't detect some changes when our schmeas aren't build with it
-         */
         // Other Options
         if ($options['alter_table_options'] === false) {
             $schemaDiff->changedTables = array();

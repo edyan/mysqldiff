@@ -1,11 +1,5 @@
 <?php
-/**
- * @todo  Add an option to copy the left database info to the right (copy to right)
- * @todo  Allow another charset
- * @todo  Add Multilingual support
- * @todo  Add logs
- * @todo  PhpUnit
- */
+
 require_once __DIR__.'/../vendor/autoload.php';
 
 use Edyan\MysqlDiff\Controller\AppController;
