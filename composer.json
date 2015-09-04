@@ -1,0 +1,32 @@
+{
+    "autoload": {
+        "psr-0": { "": "src/" }
+    },
+    "keywords": ["mysql", "database", "diff"],
+    "type": "project",
+    "authors": [
+        {
+            "name": "Emmanuel Dyan",
+            "email": "emmanuel.dyan@inetprocess.com"
+        }
+    ],
+    "license": "GPL-2.0",
+    "require": {
+        "geshi/geshi": "@dev",
+        "jdorn/sql-formatter": "^1.2",
+        "doctrine/dbal": "2.5.1",
+        "silex/silex": "~1.3",
+        "symfony/config": "~2.7",
+        "symfony/form": "~2.7",
+        "symfony/locale": "~2.7",
+        "symfony/security-csrf": "~2.7",
+        "symfony/translation": "~2.7",
+        "symfony/twig-bridge": "~2.7",
+        "symfony/validator": "~2.7",
+        "symfony/var-dumper": "~2.7",
+        "twig/twig": "~1.18"
+    },
+    "suggest": {
+        "fabpot/php-cs-fixer": "Fix PSR2 and other coding style issues"
+    }
+}

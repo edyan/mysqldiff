@@ -1,0 +1,51 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Servers Informations{% endblock %}
+
+{% block body %}
+    <div class="row">
+    {{ form_start(form, {attr: {novalidate: 'novalidate', id: 'form-servers'}}) }}
+    {% if not form.vars.valid %}
+    <div class="alert alert-danger has-error" role="alert">
+        {{ form_errors(form) }}
+    </div>
+    {% endif %}
+
+        <div class="row">
+            {% for i in 1..2 %}
+            <div class="col-lg-6">
+                {% if attribute(info, i) is defined %}
+                {% set alert = attribute(info, i) %}
+                <div class="alert alert-{{ alert.type_alert }}" role="alert">
+                    <i class="glyphicon glyphicon-{{ alert.icon_alert }}"></i> {{ alert.message }}
+                </div>
+                {% endif %}
+
+                <div class="form-group {% if not attribute(form, 'host_' ~ i).vars.valid %}has-error{% endif %}">
+                    {{ form_label(attribute(form, 'host_' ~ i), null, {'label_attr': {'class': 'control-label'}}) }}
+                    {{ form_errors(attribute(form, 'host_' ~ i)) }}
+                    {{ form_widget(attribute(form, 'host_' ~ i), {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group {% if not attribute(form, 'user_' ~ i).vars.valid %}has-error{% endif %}">
+                    {{ form_label(attribute(form, 'user_' ~ i), null, {'label_attr': {'class': 'control-label'}}) }}
+                    {{ form_errors(attribute(form, 'user_' ~ i)) }}
+                    {{ form_widget(attribute(form, 'user_' ~ i), {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group {% if not attribute(form, 'password_' ~ i).vars.valid %}has-error{% endif %}">
+                    {{ form_label(attribute(form, 'password_' ~ i), null, {'label_attr': {'class': 'control-label'}}) }}
+                    {{ form_errors(attribute(form, 'password_' ~ i)) }}
+                    {{ form_widget(attribute(form, 'password_' ~ i), {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="row">
+            {{ form_label(form.continue) }}
+            {{ form_widget(form.continue, {'attr': {'class': 'btn btn-block btn-primary'}}) }}
+        </div>
+
+    {{ form_end(form) }}
+    </div>
+
+{% endblock %}

@@ -1,0 +1,18 @@
+#!/bin/bash
+# Is composer installed?
+HAS_COMPOSER=$(which composer)
+if [ $? == 0 ]; then
+    COMPOSER="composer"
+else
+    COMPOSER="php composer.phar"
+    $COMPOSER self-update
+fi
+
+echo "1. Composer: Update Components"
+$COMPOSER update
+echo ""
+
+echo "2. Composer: Optimize Autoload"
+$COMPOSER dump-autoload --optimize
+echo ""
+

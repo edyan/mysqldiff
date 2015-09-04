@@ -1,0 +1,36 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Databases Selection{% endblock %}
+
+{% block body %}
+    <div class="row">
+    {{ form_start(form, {action: app.request.getBaseURL() ~ '/options/databases', attr: {novalidate: 'novalidate', id: 'form-databases'}}) }}
+    {{ form_errors(form) }}
+        <div class="row">
+            {% for i in 1..2 %}
+            <div class="col-lg-6">
+                {% if attribute(info, 'database_' ~ i) is defined %}
+                {% set alert = attribute(info, 'database_' ~ i) %}
+                <div class="alert alert-{{ alert.type_alert }}" role="alert">
+                    <i class="glyphicon glyphicon-{{ alert.icon_alert }}"></i> {{ alert.message }}
+                </div>
+                {% endif %}
+
+                <div class="form-group {% if not attribute(form, 'database_' ~ i).vars.valid %}has-error{% endif %}">
+                    {{ form_label(attribute(form, 'database_' ~ i), null, {'label_attr': {'class': 'control-label'}}) }}
+                    {{ form_errors(attribute(form, 'database_' ~ i)) }}
+                    {{ form_widget(attribute(form, 'database_' ~ i), {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="row">
+            {{ form_label(form.continue) }}
+            {{ form_widget(form.continue, {'attr': {'class': 'btn btn-block btn-primary'}}) }}
+        </div>
+
+    {{ form_end(form) }}
+    </div>
+
+{% endblock %}

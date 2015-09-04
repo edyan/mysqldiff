@@ -1,0 +1,22 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+    Modifications
+{% endblock %}
+
+{% block css %}
+    <style>
+    {{ css }}
+    </style>
+    {% endblock %}
+
+{% block body %}
+    <h2>
+        Will be applied to <em>{{ hosts.2.dbname }}</em> on {{ hosts.2.host }},
+        compared to <em>{{ hosts.1.dbname }}</em> on {{ hosts.1.host }}<br>
+    </h2>
+    <div class="row">
+        {{ sql | raw }}
+    </div>
+
+{% endblock %}
