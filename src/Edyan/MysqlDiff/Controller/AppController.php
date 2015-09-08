@@ -361,7 +361,6 @@ class AppController
                     $schemaDiff->changedTables[$name]->renamedIndexes = [];
                 }
             }
-
             // Remove all FK definitions in changedtables
             if ($options['alter_foreign_keys'] === false) {
                 foreach ($schemaDiff->newTables as $name => $props) {
@@ -370,11 +369,14 @@ class AppController
                         $schemaDiff->newTables[$name]->removeForeignKey($fkName);
                     }
                 }
+
                 foreach ($schemaDiff->changedTables as $name => $props) {
                     $schemaDiff->changedTables[$name]->addedForeignKeys =
                     $schemaDiff->changedTables[$name]->changedForeignKeys =
                     $schemaDiff->changedTables[$name]->removedForeignKeys = [];
                 }
+
+                $schemaDiff->orphanedForeignKeys = [];
             }
         }
 

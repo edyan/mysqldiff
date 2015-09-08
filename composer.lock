@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a92cf1c94ea643a9c7167c799ca6fa7f",
+    "hash": "bdbae5d938b578b75935a5fca01373bc",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -476,41 +476,50 @@
             "time": "2014-09-09 13:34:57"
         },
         {
-            "name": "geshi/geshi",
-            "version": "dev-master",
+            "name": "easybook/geshi",
+            "version": "v1.0.8.15",
             "source": {
                 "type": "git",
-                "url": "https://github.com/GeSHi/geshi-1.0.git",
-                "reference": "d9cfd3e0cc9b24e6bd3045a4d222e651e68accd8"
+                "url": "https://github.com/easybook/geshi.git",
+                "reference": "54387de80bc7ee50397ffae39234626a48d2d45f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/GeSHi/geshi-1.0/zipball/d9cfd3e0cc9b24e6bd3045a4d222e651e68accd8",
-                "reference": "d9cfd3e0cc9b24e6bd3045a4d222e651e68accd8",
+                "url": "https://api.github.com/repos/easybook/geshi/zipball/54387de80bc7ee50397ffae39234626a48d2d45f",
+                "reference": "54387de80bc7ee50397ffae39234626a48d2d45f",
                 "shasum": ""
+            },
+            "require": {
+                "php": ">4.3.0"
             },
             "type": "library",
             "autoload": {
                 "classmap": [
-                    "src/geshi/",
-                    "src/geshi.php"
+                    "./"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "GPL-2.0+"
+                "GPL-2.0"
             ],
             "authors": [
                 {
+                    "name": "Nigel McNie",
+                    "email": "nigel@geshi.org"
+                },
+                {
                     "name": "Benny Baumann",
-                    "email": "BenBE@geshi.org",
-                    "homepage": "http://blog.benny-baumann.de/",
-                    "role": "Developer"
+                    "email": "BenBE@geshi.org"
                 }
             ],
-            "description": "Generic Syntax Highlighter",
-            "homepage": "http://qbnz.com/highlighter/",
-            "time": "2014-11-03 21:20:34"
+            "description": "GeSHi - Generic Syntax Highlighter. This is an unmodified port of GeSHi project code found on SourceForge.",
+            "homepage": "http://qbnz.com/highlighter",
+            "keywords": [
+                "highlight",
+                "highlighter",
+                "syntax"
+            ],
+            "time": "2015-06-18 14:56:28"
         },
         {
             "name": "jdorn/sql-formatter",
@@ -1900,7 +1909,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "geshi/geshi": 20
+        "easybook/geshi": 0
     },
     "prefer-stable": false,
     "prefer-lowest": false,
