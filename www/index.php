@@ -7,26 +7,27 @@ use Symfony\Component\HttpFoundation\Request;
 
 // Boot my app
 $app = new Silex\Application();
-$app['debug'] = false;
+$app['debug'] = true;
 
 // Register all services
 $app->register(new Silex\Provider\SessionServiceProvider());
-$app->register(new Silex\Provider\TwigServiceProvider(), [
-    'twig.path' => __DIR__.'/../src/Edyan/MysqlDiff/Views',
-]);
+$app->register(new Silex\Provider\TwigServiceProvider(), ['twig.path' => __DIR__.'/../src/Edyan/MysqlDiff/Views']);
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 // Everything about forms
 $app->register(new Silex\Provider\FormServiceProvider());
 $app->register(new Silex\Provider\ValidatorServiceProvider());
-$app->register(new Silex\Provider\TranslationServiceProvider(), [
-    'translator.domains' => [],
-]);
+$app->register(new Silex\Provider\TranslationServiceProvider(), ['translator.domains' => []]);
+
+// Default route
+$app->get('/', function () use ($app) {
+    return $app->redirect($app['url_generator']->generate('/options/servers'));
+});
 
 // Routes
 $app->get('/options/servers', function () use ($app) {
     $controller = new AppController;
     return $controller->getOptionsServers($app);
-});
+})->bind('/options/servers');
 
 // Catch the post
 $app->post('/options/servers', function (Request $request) use ($app) {

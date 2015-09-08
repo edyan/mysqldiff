@@ -1,11 +1,35 @@
 <?php
+/**
+ * edyan/mysqldiff
+ *
+ * PHP Version 5.4
+ *
+ * @author Emmanuel Dyan
+ * @copyright 2015 - Emmanuel Dyan
+ *
+ * @package edyan/mysqldiff
+ *
+ * @license GNU General Public License v2.0
+ *
+ * @link https://github.com/edyan/mysqldiff
+ */
+
 namespace Edyan\MysqlDiff\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
+/**
+ * Symfony Form to set information about both DBs
+ */
 class WhatToCompareType extends AbstractType
 {
+    /**
+     * Build the form
+     *
+     * @param FormBuilderInterface $builder
+     * @param array                $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         // Databases
@@ -132,6 +156,11 @@ class WhatToCompareType extends AbstractType
           )->add('continue', 'submit', ['attr' => ['class' => 'btn btn-primary']]);
     }
 
+    /**
+     * Get Form name
+     *
+     * @return string
+     */
     public function getName()
     {
         return 'what_to_compare';

@@ -1,4 +1,18 @@
 <?php
+/**
+ * edyan/mysqldiff
+ *
+ * PHP Version 5.4
+ *
+ * @author Emmanuel Dyan
+ * @copyright 2015 - Emmanuel Dyan
+ *
+ * @package edyan/mysqldiff
+ *
+ * @license GNU General Public License v2.0
+ *
+ * @link https://github.com/edyan/mysqldiff
+ */
 
 namespace Edyan\MysqlDiff\Controller;
 
@@ -6,8 +20,19 @@ use Edyan\MysqlDiff\Form;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Main Controller
+ */
 class AppController
 {
+    /**
+     * Open the first page that lets configure both servers
+     * That'll create the form, reset the Session and render the view
+     *
+     * @param Application $app Silex Application
+     *
+     * @return string HTML Rendered
+     */
     public function getOptionsServers(Application $app)
     {
         $form = $app['form.factory']->create(new Form\ServersType());
@@ -19,6 +44,15 @@ class AppController
         ]);
     }
 
+    /**
+     * Second page: once posted information about the servers, check it and
+     * either list the DBs or display the form again
+     *
+     * @param Application $app     Silex Application
+     * @param Request     $request
+     *
+     * @return string HTML Rendered
+     */
     public function postOptionsServers(Application $app, Request $request)
     {
         $form = $app['form.factory']->create(new Form\ServersType());
@@ -47,6 +81,15 @@ class AppController
         ]);
     }
 
+    /**
+     * Third page: once selected both DBs, check it and
+     * either retirect to the diff options or display the form again if any error occurs
+     *
+     * @param Application $app     Silex Application
+     * @param Request     $request
+     *
+     * @return string HTML Rendered
+     */
     public function postOptionsDatabases(Application $app, Request $request)
     {
         // connect
@@ -77,6 +120,13 @@ class AppController
         return $app->redirect($app['url_generator']->generate('what-to-compare'));
     }
 
+    /**
+     * Fourth page: Just list the diff options
+     *
+     * @param Application $app Silex Application
+     *
+     * @return string HTML Rendered
+     */
     public function getOptionsWhatToCompare(Application $app)
     {
         $form = $app['form.factory']->create(new Form\WhatToCompareType());
@@ -86,6 +136,14 @@ class AppController
         ]);
     }
 
+    /**
+     * Fifth page: Validate options of comparison then redirect to the result
+     *
+     * @param Application $app     Silex Application
+     * @param Request     $request
+     *
+     * @return string HTML Rendered
+     */
     public function postOptionsWhatToCompare(Application $app, Request $request)
     {
         $form = $app['form.factory']->create(new Form\WhatToCompareType());
@@ -104,6 +162,13 @@ class AppController
         return $app->redirect($app['url_generator']->generate('results'));
     }
 
+    /**
+     * Lsat page: Generate the SQL with the DIFF
+     *
+     * @param Application $app Silex Application
+     *
+     * @return string HTML Rendered
+     */
     public function getResults(Application $app)
     {
         $options = $app['session']->get('options');
@@ -147,50 +212,34 @@ class AppController
 
         $schemaDiff = $this->buildSchemaDiff($dbalSchemas[2], $dbalSchemas[1], $options);
         // Build the SQL
-        $schemaSqlDiff = $schemaDiff->toSql($dbs['dbhs'][1]->getDatabasePlatform());
-        $sql = implode(';' . PHP_EOL, $schemaSqlDiff) . ';' . PHP_EOL;
-
-        // Manage latest options
-        if ($options['deactivate_foreign_keys']) {
-            $sql = 'SET FOREIGN_KEY_CHECKS = 0;' . PHP_EOL . PHP_EOL . $sql;
-            $sql.= PHP_EOL . 'SET FOREIGN_KEY_CHECKS = 1;';
-        }
-        // At the end
-        if (!$options['use_backticks']) {
-            $sql = str_replace('`', '', $sql);
-        }
-        // Highlight Syntax ?
-        $css = '';
-        if ($options['syntax_highlighting'] || $options['line_numbers']) {
-            $geshi = new \GeSHi($sql, 'mysql');
-            $geshi->enable_classes();
-            $geshi->enable_keyword_links(false);
-
-            if ($options['line_numbers']) {
-                $geshi->enable_line_numbers(GESHI_FANCY_LINE_NUMBERS);
-            }
-            if ($options['syntax_highlighting']) {
-                $css = $geshi->get_stylesheet();
-            }
-
-            $sql = $geshi->parse_code();
-        } else {
-            $sql = "<pre>$sql</pre>";
-        }
+        $generatedSQL = $this->finalizeSQLSyntax(
+            $schemaDiff->toSql($dbs['dbhs'][1]->getDatabasePlatform()),
+            $options['deactivate_foreign_keys'],
+            $options['use_backticks'],
+            $options['syntax_highlighting'],
+            $options['line_numbers']
+        );
 
         return $app['twig']->render('results.html.twig', [
-            'css' => $css,
-            'sql' => $sql,
+            'css' => $generatedSQL['css'],
+            'sql' => $generatedSQL['sql'],
             'hosts' => $hosts
         ]);
     }
 
-    private function getDatabases(array $dbs)
+    /**
+     * Get a list of databases for all connections
+     *
+     * @param array $dbhs List of connections
+     *
+     * @return array List of databases + info in case of errors
+     */
+    private function getDatabases(array $dbhs)
     {
         $data = [];
         $info = [];
 
-        foreach ($dbs as $num => $db) {
+        foreach ($dbhs as $num => $db) {
             try {
                 foreach ($db->getSchemaManager()->listDatabases() as $row) {
                     $data['database_' . $num . '_values'][$row] = $row;
@@ -217,6 +266,13 @@ class AppController
         return ['data' => $data, 'info' => $info];
     }
 
+    /**
+     * Connect to the DBs with Doctrine
+     *
+     * @param array $hosts
+     *
+     * @return array
+     */
     private function connectToDbs(array $hosts)
     {
         $errors = 1;
@@ -254,6 +310,15 @@ class AppController
         return ['info' => $info, 'errors' => $errors, 'dbhs' => $dbhs];
     }
 
+    /**
+     * Build the schemadiff with Doctrine
+     *
+     * @param \Doctrine\DBAL\Schema\Schema $leftDbalSchemas
+     * @param \Doctrine\DBAL\Schema\Schema $rightdbalSchemas
+     * @param array                        $options
+     *
+     * @return \Doctrine\DBAL\Schema\SchemaDiff
+     */
     private function buildSchemaDiff(
         \Doctrine\DBAL\Schema\Schema $leftDbalSchemas,
         \Doctrine\DBAL\Schema\Schema $rightdbalSchemas,
@@ -265,17 +330,17 @@ class AppController
 
         // Create missing tables ?
         if ($options['create_missing_tables'] === false) {
-            $schemaDiff->newTables = array();
+            $schemaDiff->newTables = [];
         }
 
         // Drop existing tables ?
         if ($options['delete_extra_tables'] === false) {
-            $schemaDiff->removedTables = array();
+            $schemaDiff->removedTables = [];
         }
 
         // Other Options
         if ($options['alter_table_options'] === false) {
-            $schemaDiff->changedTables = array();
+            $schemaDiff->changedTables = [];
         } else {
             // Remove all Columns alteration in changedtables
             if ($options['alter_columns'] === false) {
@@ -283,7 +348,7 @@ class AppController
                     $schemaDiff->changedTables[$name]->addedColumns =
                     $schemaDiff->changedTables[$name]->changedColumns =
                     $schemaDiff->changedTables[$name]->removedColumns =
-                    $schemaDiff->changedTables[$name]->renamedColumns = array();
+                    $schemaDiff->changedTables[$name]->renamedColumns = [];
                 }
             }
 
@@ -293,7 +358,7 @@ class AppController
                     $schemaDiff->changedTables[$name]->addedIndexes =
                     $schemaDiff->changedTables[$name]->changedIndexes =
                     $schemaDiff->changedTables[$name]->removedIndexes =
-                    $schemaDiff->changedTables[$name]->renamedIndexes = array();
+                    $schemaDiff->changedTables[$name]->renamedIndexes = [];
                 }
             }
 
@@ -308,11 +373,58 @@ class AppController
                 foreach ($schemaDiff->changedTables as $name => $props) {
                     $schemaDiff->changedTables[$name]->addedForeignKeys =
                     $schemaDiff->changedTables[$name]->changedForeignKeys =
-                    $schemaDiff->changedTables[$name]->removedForeignKeys = array();
+                    $schemaDiff->changedTables[$name]->removedForeignKeys = [];
                 }
             }
         }
 
         return $schemaDiff;
+    }
+
+    /**
+     * Put the last options to the sql: highlight, backticks....
+     *
+     * @param string  $sql
+     * @param boolean $deactivateForeignKeys
+     * @param boolean $backticks
+     * @param boolean $highlight
+     * @param boolean $lineNumbers
+     *
+     * @return string
+     */
+    private function finalizeSQLSyntax($sql, $deactivateForeignKeys, $backticks, $highlight, $lineNumbers)
+    {
+        $sql = implode(';' . PHP_EOL, $sql) . ';' . PHP_EOL;
+
+        // Set line numbers, backticks....
+        // Manage latest options
+        if ($deactivateForeignKeys) {
+            $sql = 'SET FOREIGN_KEY_CHECKS = 0;' . PHP_EOL . PHP_EOL . $sql;
+            $sql.= PHP_EOL . 'SET FOREIGN_KEY_CHECKS = 1;';
+        }
+        // At the end
+        if (!$backticks) {
+            $sql = str_replace('`', '', $sql);
+        }
+        // Highlight Syntax ?
+        $css = '';
+        if ($highlight || $lineNumbers) {
+            $geshi = new \GeSHi($sql, 'mysql');
+            $geshi->enable_classes();
+            $geshi->enable_keyword_links(false);
+
+            if ($lineNumbers) {
+                $geshi->enable_line_numbers(GESHI_FANCY_LINE_NUMBERS);
+            }
+            if ($highlight) {
+                $css = $geshi->get_stylesheet();
+            }
+
+            $sql = $geshi->parse_code();
+        } else {
+            $sql = "<pre>$sql</pre>";
+        }
+
+        return ['sql' => $sql, 'css' => $css];
     }
 }

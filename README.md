@@ -2,14 +2,13 @@
 A simple tool that helps to compare 2 databases using Doctrine DBAL.
 
 # Installation
-Just clone it and do a : 
+* Just clone it and do a :
 ```bash
 composer update
 ```
-
-Create a Vhost that'll have www/ as a DocumentRoot and open your browser. Set the information
-
-Disabled options are because Doctrine doesn't compare Table's properties such as Engine, Charset or Comment. 
+* Create a Vhost that'll have www/ as a DocumentRoot and open your browser. Set the information
+* Disabled options are because Doctrine doesn't compare Table's properties such as Engine, Charset or Comment.
+* Open http://vhost.name/ on your browser. To avoid having "index.php" for each URL, copy .htaccess-dist to .htaccess in www/
 
 # Todo
 A lot, including:
