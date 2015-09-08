@@ -15,7 +15,7 @@
     "license": "GPL-2.0",
     "require": {
         "php": ">=5.4",
-        "geshi/geshi": "@dev",
+        "geshi/geshi": "dev-master",
         "jdorn/sql-formatter": "^1.2",
         "doctrine/dbal": "2.5.1",
         "silex/silex": "~1.3",
