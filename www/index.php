@@ -12,7 +12,7 @@ $app['env'] = 'prod';
 if (array_key_exists('env', $_ENV)) {
     $app['env'] = $_ENV['env'];
 }
-//$app['debug'] = true;
+
 
 // Register all services
 $app->register(new Silex\Provider\SessionServiceProvider());
@@ -68,6 +68,7 @@ $app->get('/results', function (Request $request) use ($app) {
 
 // Run
 if ($app['env'] == 'dev') {
+    $app['debug'] = true;
     return $app;
 }
 
