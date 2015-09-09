@@ -58,6 +58,9 @@ class AppController
         $form = $app['form.factory']->create(new Form\ServersType());
         $form->handleRequest($request);
         $data = $form->getData();
+        if (empty($data)) {
+            throw new \Symfony\Component\HttpKernel\Exception\BadRequestHttpException('Your form is empty');
+        }
 
         // connect with the data I found
         $connectToDbs = $this->connectToDbs($data);
@@ -72,9 +75,28 @@ class AppController
 
         // Everything is fine, send another form which is the selection of databases
         $app['session']->set('hosts', $data);
+
+        return $app->redirect($app['url_generator']->generate('options/databases'));
+    }
+
+    /**
+     * Get a List of Databases
+     *
+     * @param Application $app Silex Application
+     *
+     * @return string HTML Rendered
+     */
+    public function getOptionsDatabases(Application $app)
+    {
+        $hosts = $app['session']->get('hosts');
+        if (empty($hosts)) {
+            throw new \Symfony\Component\HttpKernel\Exception\BadRequestHttpException('No connection defined');
+        }
+
+        $connectToDbs = $this->connectToDbs($hosts);
+
         $getDbs = $this->getDatabases($connectToDbs['dbhs']);
         $form = $app['form.factory']->create(new Form\DatabasesType(), null, $getDbs['data']);
-
         return $app['twig']->render('options-databases.html.twig', [
             'form' => $form->createView(),
             'info' => $getDbs['info'],

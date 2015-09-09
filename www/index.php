@@ -7,16 +7,22 @@ use Symfony\Component\HttpFoundation\Request;
 
 // Boot my app
 $app = new Silex\Application();
-$app['debug'] = true;
+// Detect environment (default: prod)
+$app['env'] = 'prod';
+if (array_key_exists('env', $_ENV)) {
+    $app['env'] = $_ENV['env'];
+}
+//$app['debug'] = true;
 
 // Register all services
 $app->register(new Silex\Provider\SessionServiceProvider());
-$app->register(new Silex\Provider\TwigServiceProvider(), ['twig.path' => __DIR__.'/../src/Edyan/MysqlDiff/Views']);
+$app->register(new Silex\Provider\TranslationServiceProvider(), ['translator.domains' => []]);
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 // Everything about forms
 $app->register(new Silex\Provider\FormServiceProvider());
 $app->register(new Silex\Provider\ValidatorServiceProvider());
-$app->register(new Silex\Provider\TranslationServiceProvider(), ['translator.domains' => []]);
+// Twig Templates
+$app->register(new Silex\Provider\TwigServiceProvider(), ['twig.path' => __DIR__.'/../src/Views']);
 
 // Default route
 $app->get('/', function () use ($app) {
@@ -28,14 +34,15 @@ $app->get('/options/servers', function () use ($app) {
     $controller = new AppController;
     return $controller->getOptionsServers($app);
 })->bind('/options/servers');
-
-// Catch the post
 $app->post('/options/servers', function (Request $request) use ($app) {
     $controller = new AppController;
     return $controller->postOptionsServers($app, $request);
 });
 
-// Catch the post
+$app->get('/options/databases', function () use ($app) {
+    $controller = new AppController;
+    return $controller->getOptionsDatabases($app);
+})->bind('options/databases');
 $app->post('/options/databases', function (Request $request) use ($app) {
     $controller = new AppController;
     return $controller->postOptionsDatabases($app, $request);
@@ -60,4 +67,8 @@ $app->get('/results', function (Request $request) use ($app) {
 })->bind('results');
 
 // Run
+if ($app['env'] == 'dev') {
+    return $app;
+}
+
 $app->run();

@@ -134,17 +134,17 @@ class WhatToCompareType extends AbstractType
                 'attr' => ['class' => 'checkbox-inline'],
                 'data' => true,
               ]
-             /**
-              * Later create INSERT and REPLACE
-              * )->add(
-              *     'create_insert_replace',
-              *     'checkbox',
-              *     [
-              *       'label' => 'Create INSERT or REPLACE-statements for selected tables',
-              *       'attr' => ['class' => 'checkbox-inline'],
-              *    'data' => true,
-              *     ]
-              */
+              /**
+               * Later create INSERT and REPLACE
+               * )->add(
+               *     'create_insert_replace',
+               *     'checkbox',
+               *     [
+               *       'label' => 'Create INSERT or REPLACE-statements for selected tables',
+               *       'attr' => ['class' => 'checkbox-inline'],
+               *    'data' => true,
+               *     ]
+               */
           )->add(
               'deactivate_foreign_keys',
               'checkbox',

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false"
+         syntaxCheck="false"
+>
+    <php>
+        <env name='env' value="dev"/>
+        <env name='host_1' value="localhost"/>
+        <env name='user_1' value=""/>
+        <env name='db_1' value="db1"/>
+        <env name='password_1' value=""/>
+        <env name='host_2' value="127.0.0.1"/>
+        <env name='user_2' value=""/>
+        <env name='password_2' value=""/>
+        <env name='db_2' value="db2"/>
+    </php>
+
+    <testsuites>
+        <testsuite name="MySQLDiff Test Suite">
+            <directory>./tests/</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

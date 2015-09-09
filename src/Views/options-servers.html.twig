@@ -7,7 +7,7 @@
     {{ form_start(form, {attr: {novalidate: 'novalidate', id: 'form-servers'}}) }}
     {% if not form.vars.valid %}
     <div class="alert alert-danger has-error" role="alert">
-        {{ form_errors(form) }}
+        Your form is not valid (Wrong validation or missing CSRF)
     </div>
     {% endif %}
 

@@ -2,7 +2,9 @@
     "name": "edyan/mysqldiff",
     "description": "A simple tool that helps to compare 2 databases using Doctrine DBAL.",
     "autoload": {
-        "psr-0": { "": "src/" }
+        "psr-4": {
+            "Edyan\\MysqlDiff\\": "src/"
+        }
     },
     "keywords": ["mysql", "database", "diff"],
     "type": "project",
@@ -26,10 +28,13 @@
         "symfony/translation": "~2.7",
         "symfony/twig-bridge": "~2.7",
         "symfony/validator": "~2.7",
-        "symfony/var-dumper": "~2.7",
-        "twig/twig": "~1.18"
+        "symfony/var-dumper": "~2.7"
     },
     "suggest": {
         "fabpot/php-cs-fixer": "Fix PSR2 and other coding style issues"
+    },
+    "require-dev": {
+        "symfony/browser-kit": "^2.7",
+        "symfony/css-selector": "^2.7"
     }
 }

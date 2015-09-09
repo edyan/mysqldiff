@@ -33,6 +33,7 @@ class ServersType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $hostnameRegex = '/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/';
         // Hosts
         for ($i = 1; $i <= 2; $i++) {
             $builder
@@ -41,7 +42,7 @@ class ServersType extends AbstractType
                     'constraints' => [
                         new Assert\Length(['min' => 3, 'max' => 70]),
                         new Assert\NotBlank(),
-                        new Assert\Regex(['pattern' => '/[a]/']),
+                        new Assert\Regex(['pattern' => $hostnameRegex]),
                     ],
                     'label' => "Host $i",
                 ])
