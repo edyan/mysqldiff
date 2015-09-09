@@ -8,7 +8,7 @@ namespace Edyan\MySQLDiff\Tests;
 
 use Silex\WebTestCase;
 
-class YourTest extends WebTestCase
+class ApplicationTest extends WebTestCase
 {
     public function createApplication()
     {
@@ -37,7 +37,6 @@ class YourTest extends WebTestCase
         $client = $this->createClient();
         $client->request('GET', '/foo');
     }
-
 
     public function testGetServersConfig()
     {
@@ -84,7 +83,6 @@ class YourTest extends WebTestCase
         $this->assertGreaterThan(0, $crawler->filter('html:contains("Failed trying to connect to Host (foo)")')->count());
     }
 
-
     public function testPostOnlyOneRightDBInFormForServersConfig()
     {
         $client = $this->createClient();
@@ -107,7 +105,6 @@ class YourTest extends WebTestCase
         $this->assertEquals(2, $crawler->filter('div.alert-danger')->count());
         $this->assertEquals(1, $crawler->filter('html:contains("Your form is not valid")')->count());
     }
-
 
     protected function postRightDataInFormForServersConfig()
     {
@@ -169,7 +166,6 @@ class YourTest extends WebTestCase
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }
 
-
     public function testRightDBSelected()
     {
         $client = $this->createClient();
@@ -185,7 +181,6 @@ class YourTest extends WebTestCase
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
         $this->assertTrue($client->getResponse()->isRedirect('/options/what-to-compare'));
     }
-
 
     public function testWhatToCompareAndGetResult()
     {

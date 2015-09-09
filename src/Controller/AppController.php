@@ -97,6 +97,7 @@ class AppController
 
         $getDbs = $this->getDatabases($connectToDbs['dbhs']);
         $form = $app['form.factory']->create(new Form\DatabasesType(), null, $getDbs['data']);
+
         return $app['twig']->render('options-databases.html.twig', [
             'form' => $form->createView(),
             'info' => $getDbs['info'],
