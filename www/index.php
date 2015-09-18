@@ -69,6 +69,7 @@ $app->get('/results', function (Request $request) use ($app) {
 // Run
 if ($app['env'] == 'dev') {
     $app['debug'] = true;
+} elseif ($app['env'] == 'test') {
     return $app;
 }
 

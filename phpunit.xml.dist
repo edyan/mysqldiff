@@ -10,7 +10,7 @@
          syntaxCheck="false"
 >
     <php>
-        <env name='env' value="dev"/>
+        <env name='env' value="test"/>
         <env name='host_1' value="localhost"/>
         <env name='user_1' value=""/>
         <env name='db_1' value="db1"/>
