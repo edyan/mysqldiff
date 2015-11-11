@@ -26,6 +26,26 @@ use Symfony\Component\HttpFoundation\Request;
 class AppController
 {
     /**
+     * Redirect to any route (used in routes)
+     *
+     * @param Application $app     Silex Application
+     * @param string      $route               Route Name
+     *
+     * @return string HTML Rendered
+     */
+    public function urlRedirect(Application $app, $route)
+    {
+        try {
+            $url = $app['url_generator']->generate($route);
+        } catch (\Exception $e) {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Route $route not found");
+        }
+        
+        return $app->redirect($url);
+    }
+    
+    
+    /**
      * Open the first page that lets configure both servers
      * That'll create the form, reset the Session and render the view
      *
@@ -76,7 +96,7 @@ class AppController
         // Everything is fine, send another form which is the selection of databases
         $app['session']->set('hosts', $data);
 
-        return $app->redirect($app['url_generator']->generate('options/databases'));
+        return $this->urlRedirect($app, 'options-databases-get');
     }
 
     /**
@@ -140,7 +160,7 @@ class AppController
 
         $app['session']->set('hosts', $hosts);
 
-        return $app->redirect($app['url_generator']->generate('what-to-compare'));
+        return $this->urlRedirect($app, 'options-wtc-get');
     }
 
     /**
@@ -182,7 +202,7 @@ class AppController
 
         $app['session']->set('options', $options);
 
-        return $app->redirect($app['url_generator']->generate('results'));
+        return $this->urlRedirect($app, 'results');
     }
 
     /**

@@ -1,0 +1,43 @@
+home:
+    path: /
+    methods: GET
+    defaults:
+        _controller: "Edyan\MysqlDiff\Controller\AppController::urlRedirect"
+        route: options-servers-get
+        permanent: true
+    
+    
+options-servers-get:
+    path: /options/servers
+    defaults: { _controller: "Edyan\MysqlDiff\Controller\AppController::getOptionsServers" }
+    methods: GET
+options-servers-post:
+    path: /options/servers
+    defaults: { _controller: "Edyan\MysqlDiff\Controller\AppController::postOptionsServers" }
+    methods: POST
+
+    
+options-databases-get:
+    path: /options/databases
+    defaults: { _controller: "Edyan\MysqlDiff\Controller\AppController::getOptionsDatabases" }
+    methods: GET
+options-databases-post:
+    path: /options/databases
+    defaults: { _controller: "Edyan\MysqlDiff\Controller\AppController::postOptionsDatabases" }
+    methods: POST
+
+    
+options-wtc-get:
+    path: /options/what-to-compare
+    defaults: { _controller: "Edyan\MysqlDiff\Controller\AppController::getOptionsWhatToCompare" }
+    methods: GET
+options-wtc-post:
+    path: /options/what-to-compare
+    defaults: { _controller: "Edyan\MysqlDiff\Controller\AppController::postOptionsWhatToCompare" }
+    methods: POST
+
+
+results:
+    path: /results
+    defaults: { _controller: "Edyan\MysqlDiff\Controller\AppController::getResults" }
+    methods: GET

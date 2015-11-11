@@ -2,8 +2,8 @@
 
 require_once __DIR__.'/../vendor/autoload.php';
 
-use Edyan\MysqlDiff\Controller\AppController;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component as sFc;
+use Silex\Provider as silP;
 
 // Boot my app
 $app = new Silex\Application();
@@ -12,59 +12,23 @@ $app['env'] = 'prod';
 if (array_key_exists('env', $_ENV)) {
     $app['env'] = $_ENV['env'];
 }
-
-
 // Register all services
-$app->register(new Silex\Provider\SessionServiceProvider());
-$app->register(new Silex\Provider\TranslationServiceProvider(), ['translator.domains' => []]);
-$app->register(new Silex\Provider\UrlGeneratorServiceProvider());
+$app->register(new silP\SessionServiceProvider());
+$app->register(new silP\TranslationServiceProvider(), ['translator.domains' => []]);
+$app->register(new silP\UrlGeneratorServiceProvider());
 // Everything about forms
-$app->register(new Silex\Provider\FormServiceProvider());
-$app->register(new Silex\Provider\ValidatorServiceProvider());
+$app->register(new silP\FormServiceProvider());
+$app->register(new silP\ValidatorServiceProvider());
 // Twig Templates
-$app->register(new Silex\Provider\TwigServiceProvider(), ['twig.path' => __DIR__.'/../src/Views']);
+$app->register(new silP\TwigServiceProvider(), ['twig.path' => __DIR__.'/../src/Views']);
+// Routes are in a config
+$app['routes'] = $app->extend('routes', function (sFc\Routing\RouteCollection $routes, Silex\Application $app) {
+    $loader = new sFc\Routing\Loader\YamlFileLoader(new sFc\Config\FileLocator(__DIR__ . '/../config'));
+    $collection = $loader->load('routes.yml');
+    $routes->addCollection($collection);
 
-// Default route
-$app->get('/', function () use ($app) {
-    return $app->redirect($app['url_generator']->generate('/options/servers'));
+    return $routes;
 });
-
-// Routes
-$app->get('/options/servers', function () use ($app) {
-    $controller = new AppController;
-    return $controller->getOptionsServers($app);
-})->bind('/options/servers');
-$app->post('/options/servers', function (Request $request) use ($app) {
-    $controller = new AppController;
-    return $controller->postOptionsServers($app, $request);
-});
-
-$app->get('/options/databases', function () use ($app) {
-    $controller = new AppController;
-    return $controller->getOptionsDatabases($app);
-})->bind('options/databases');
-$app->post('/options/databases', function (Request $request) use ($app) {
-    $controller = new AppController;
-    return $controller->postOptionsDatabases($app, $request);
-});
-
-// Catch the get
-// The bind is to define the root for URL Generator
-$app->get('/options/what-to-compare', function (Request $request) use ($app) {
-    $controller = new AppController;
-    return $controller->getOptionsWhatToCompare($app, $request);
-})->bind('what-to-compare');
-
-$app->post('/options/what-to-compare', function (Request $request) use ($app) {
-    $controller = new AppController;
-    return $controller->postOptionsWhatToCompare($app, $request);
-});
-
-// Get the results
-$app->get('/results', function (Request $request) use ($app) {
-    $controller = new AppController;
-    return $controller->getResults($app, $request);
-})->bind('results');
 
 // Run
 if ($app['env'] == 'dev') {
@@ -72,5 +36,4 @@ if ($app['env'] == 'dev') {
 } elseif ($app['env'] == 'test') {
     return $app;
 }
-
 $app->run();
